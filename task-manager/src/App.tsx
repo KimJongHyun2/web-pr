@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Task } from './types/task'
 import TaskItem from './components/TaskItem'
+import { loadTasks, saveTasks } from './utils/storage'
 import './App.css'
 
-// 샘플 Task 데이터
+// 샘플 Task 데이터 (저장된 데이터가 없을 때 처음 보여줌)
 const sampleTasks: Task[] = [
   { id: 1, title: 'React 복습하기', completed: true },
   { id: 2, title: 'TypeScript 인터페이스 공부하기', completed: false },
@@ -21,9 +22,14 @@ const today: string = new Date().toLocaleDateString('ko-KR', {
 })
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>(sampleTasks)
+  const [tasks, setTasks] = useState<Task[]>(() => loadTasks(sampleTasks))
   const [input, setInput] = useState<string>('')
   const [error, setError] = useState<string>('')
+
+  // tasks가 바뀔 때마다 브라우저에 저장
+  useEffect(() => {
+    saveTasks(tasks)
+  }, [tasks])
 
   // 통계: 별도 state 없이 tasks 배열에서 계산
   const totalCount: number = tasks.length
@@ -134,6 +140,7 @@ function App() {
           value={input}
           onChange={handleChange}
           placeholder="할 일을 입력하세요"
+          aria-label="새 할 일"
         />
         <button type="button" onClick={handleAddClick}>
           추가
@@ -154,6 +161,8 @@ function App() {
       {totalCount === 0 && (
         <p className="empty">등록된 할 일이 없습니다. 새로운 할 일을 추가해보세요.</p>
       )}
+
+      <p className="footnote">변경 내용은 이 브라우저에 자동으로 저장됩니다.</p>
     </div>
   )
 }
