@@ -1,24 +1,26 @@
 import { useState } from 'react'
-import type { Task } from '../types/task'
+import type { ScheduledTask } from '../types/scheduledTask'
 import Icon from './Icon'
 
 // TaskItem 컴포넌트가 받는 Props의 타입
 interface TaskItemProps {
-  task: Task
+  task: ScheduledTask
   onToggle: (id: number) => void
   onDelete: (id: number) => void
   // 수정에 실패하면 오류 메시지, 성공하면 null 반환
-  onEdit: (id: number, title: string) => string | null
+  onEdit: (id: number, title: string, date: string) => string | null
 }
 
 function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false)
-  const [draft, setDraft] = useState<string>('')
+  const [draftTitle, setDraftTitle] = useState<string>('')
+  const [draftDate, setDraftDate] = useState<string>('')
   const [editError, setEditError] = useState<string>('')
 
-  // 수정 시작: 현재 제목을 입력창에 채움
+  // 수정 시작: 현재 제목과 날짜를 입력창에 채움
   const startEdit = (): void => {
-    setDraft(task.title)
+    setDraftTitle(task.title)
+    setDraftDate(task.date)
     setEditError('')
     setIsEditing(true)
   }
@@ -31,7 +33,7 @@ function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
 
   // 수정 저장: 검증에 실패하면 오류 메시지를 보여주고 수정 상태 유지
   const saveEdit = (): void => {
-    const errorMessage: string | null = onEdit(task.id, draft)
+    const errorMessage: string | null = onEdit(task.id, draftTitle, draftDate)
     if (errorMessage !== null) {
       setEditError(errorMessage)
       return
@@ -39,8 +41,13 @@ function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
     setIsEditing(false)
   }
 
-  const handleDraftChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setDraft(e.target.value)
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setDraftTitle(e.target.value)
+    setEditError('')
+  }
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setDraftDate(e.target.value)
     setEditError('')
   }
 
@@ -63,11 +70,19 @@ function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemProps) {
         <input
           type="text"
           className="task-edit-input"
-          value={draft}
-          onChange={handleDraftChange}
+          value={draftTitle}
+          onChange={handleTitleChange}
           onKeyDown={handleKeyDown}
           aria-label="할 일 수정"
           autoFocus
+        />
+        <input
+          type="date"
+          className="task-edit-date"
+          value={draftDate}
+          onChange={handleDateChange}
+          onKeyDown={handleKeyDown}
+          aria-label="날짜 변경"
         />
         <button
           type="button"

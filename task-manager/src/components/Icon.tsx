@@ -1,5 +1,5 @@
 // 사용할 수 있는 아이콘 이름
-type IconName = 'edit' | 'trash' | 'check' | 'close'
+type IconName = 'edit' | 'trash' | 'check' | 'close' | 'prev' | 'next'
 
 interface IconProps {
   name: IconName
@@ -11,6 +11,8 @@ const ICON_PATHS: Record<IconName, string[]> = {
   trash: ['M3 6h18', 'M8 6V4h8v2', 'M19 6l-1 14H6L5 6', 'M10 11v5', 'M14 11v5'],
   check: ['M5 12.5l4.5 4.5L19 7.5'],
   close: ['M6 6l12 12', 'M18 6L6 18'],
+  prev: ['M15 6l-6 6 6 6'],
+  next: ['M9 6l6 6-6 6'],
 }
 
 function Icon({ name }: IconProps) {
