@@ -13,6 +13,13 @@ const sampleTasks: Task[] = [
 // Task 제목의 최대 글자 수
 const MAX_TITLE_LENGTH: number = 50
 
+// 오늘 날짜 (예: 11월 12일 목요일)
+const today: string = new Date().toLocaleDateString('ko-KR', {
+  month: 'long',
+  day: 'numeric',
+  weekday: 'long',
+})
+
 function App() {
   const [tasks, setTasks] = useState<Task[]>(sampleTasks)
   const [input, setInput] = useState<string>('')
@@ -21,6 +28,9 @@ function App() {
   // 통계: 별도 state 없이 tasks 배열에서 계산
   const totalCount: number = tasks.length
   const completedCount: number = tasks.filter((task) => task.completed).length
+  const remainingCount: number = totalCount - completedCount
+  const progressPercent: number =
+    totalCount === 0 ? 0 : Math.round((completedCount / totalCount) * 100)
 
   // 입력값 검증: 문제가 있으면 오류 메시지, 없으면 null 반환
   const validateTitle = (title: string): string | null => {
@@ -83,13 +93,42 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Task Manager</h1>
+      <header>
+        <p className="today">{today}</p>
+        <h1>Task Manager</h1>
+      </header>
 
-      <p className="stats">
-        전체 {totalCount}개 · 완료 {completedCount}개
-      </p>
+      <div className="stats">
+        <div className="stat">
+          <span className="stat-label">전체</span>
+          <strong className="stat-value">{totalCount}개</strong>
+        </div>
+        <div className="stat">
+          <span className="stat-label">완료</span>
+          <strong className="stat-value">{completedCount}개</strong>
+        </div>
+        <div className="stat">
+          <span className="stat-label">남음</span>
+          <strong className="stat-value">{remainingCount}개</strong>
+        </div>
+      </div>
 
-      <div className="task-form">
+      <div className="progress-header">
+        <span>진행률</span>
+        <span className="progress-percent">{progressPercent}%</span>
+      </div>
+      <div
+        className="progress"
+        role="progressbar"
+        aria-label="진행률"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={progressPercent}
+      >
+        <div className="progress-bar" style={{ width: `${progressPercent}%` }} />
+      </div>
+
+      <div className={error !== '' ? 'task-form has-error' : 'task-form'}>
         <input
           type="text"
           value={input}
@@ -112,7 +151,9 @@ function App() {
           />
         ))}
       </ul>
-      {totalCount === 0 && <p className="empty">등록된 할 일이 없습니다.</p>}
+      {totalCount === 0 && (
+        <p className="empty">등록된 할 일이 없습니다. 새로운 할 일을 추가해보세요.</p>
+      )}
     </div>
   )
 }

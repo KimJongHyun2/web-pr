@@ -1,90 +1,305 @@
 .app {
-  max-width: 480px;
-  margin: 40px auto;
-  padding: 24px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+/* 헤더 */
+.today {
+  margin: 0 0 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
 }
 
 .app h1 {
-  margin: 0 0 4px;
+  margin: 0;
+  font-size: 1.875rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
+/* 통계 */
 .stats {
-  margin: 0 0 16px;
-  color: #666;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 24px;
 }
 
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border-radius: 14px;
+}
+
+.stat-label {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 진행률 */
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.progress-percent {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.progress {
+  height: 8px;
+  margin-top: 6px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-radius: 999px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+/* 입력 폼 */
 .task-form {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  margin-top: 24px;
+  padding: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.task-form:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.task-form.has-error {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px var(--danger-soft);
 }
 
 .task-form input {
   flex: 1;
   min-width: 0;
   padding: 8px 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
 }
 
-button {
-  padding: 8px 14px;
-  font-size: 1rem;
-  color: #fff;
-  background: #2563eb;
+.task-form input::placeholder {
+  color: var(--muted);
+}
+
+.task-form button {
+  flex: none;
+  padding: 10px 18px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--button-text);
+  background: var(--button);
   border: none;
-  border-radius: 6px;
+  border-radius: 11px;
   cursor: pointer;
+  transition:
+    opacity 0.15s,
+    transform 0.1s;
+}
+
+.task-form button:hover {
+  opacity: 0.85;
+}
+
+.task-form button:active {
+  transform: scale(0.96);
 }
 
 .error {
-  margin: 8px 0 0;
-  color: #dc2626;
-  font-size: 0.9rem;
+  margin: 8px 6px 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--danger);
+  animation: shake 0.3s;
 }
 
+/* 목록 */
 .task-list {
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 20px 0 0;
   padding: 0;
-  margin: 16px 0 0;
+  list-style: none;
 }
 
 .task-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  gap: 4px;
+  padding: 4px 6px 4px 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+  animation: item-in 0.22s ease-out;
+}
+
+.task-item:hover {
+  border-color: var(--border-strong);
+}
+
+.task-item.completed {
+  background: var(--surface-2);
 }
 
 .task-label {
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   min-width: 0;
+  padding: 10px 6px 10px 14px;
   cursor: pointer;
+}
+
+.task-checkbox {
+  display: grid;
+  flex: none;
+  place-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  appearance: none;
+  border: 2px solid var(--border-strong);
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.task-checkbox::after {
+  width: 10px;
+  height: 6px;
+  content: '';
+  border-bottom: 2px solid var(--on-accent);
+  border-left: 2px solid var(--on-accent);
+  transform: translateY(-1px) rotate(-45deg) scale(0);
+  transition: transform 0.15s;
+}
+
+.task-checkbox:hover {
+  border-color: var(--accent);
+}
+
+.task-checkbox:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.task-checkbox:checked::after {
+  transform: translateY(-1px) rotate(-45deg) scale(1);
 }
 
 .task-title {
   overflow-wrap: anywhere;
+  transition: color 0.15s;
 }
 
 .task-title.completed {
-  color: #999;
+  color: var(--muted);
   text-decoration: line-through;
 }
 
 .delete-button {
-  padding: 4px 10px;
-  font-size: 0.9rem;
-  background: #dc2626;
+  display: grid;
+  flex: none;
+  place-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.delete-button:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
 }
 
 .empty {
-  color: #999;
+  margin: 20px 0 0;
+  padding: 32px 16px;
   text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+}
+
+/* 키보드 포커스 표시 */
+.task-form button:focus-visible,
+.task-checkbox:focus-visible,
+.delete-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 22px 18px;
+    border-radius: 20px;
+  }
 }
