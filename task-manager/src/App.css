@@ -152,12 +152,74 @@
   animation: shake 0.3s;
 }
 
+/* 필터와 일괄 삭제 */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--surface-2);
+  border-radius: 12px;
+}
+
+.filter-tab {
+  padding: 6px 14px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.filter-tab:hover {
+  color: var(--text);
+}
+
+.filter-tab.active {
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.clear-button {
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.clear-button:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
 /* 목록 */
 .task-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 20px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -265,7 +327,7 @@
 }
 
 .empty {
-  margin: 20px 0 0;
+  margin: 12px 0 0;
   padding: 32px 16px;
   text-align: center;
   color: var(--muted);
@@ -283,6 +345,8 @@
 /* 키보드 포커스 표시 */
 .task-form button:focus-visible,
 .task-checkbox:focus-visible,
+.filter-tab:focus-visible,
+.clear-button:focus-visible,
 .delete-button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
