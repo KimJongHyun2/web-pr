@@ -60,7 +60,8 @@ function App() {
   })
 
   // 입력값 검증: 문제가 있으면 오류 메시지, 없으면 null 반환
-  const validateTitle = (title: string): string | null => {
+  // ignoreId: 수정 중인 Task는 중복 검사에서 제외
+  const validateTitle = (title: string, ignoreId: number | null = null): string | null => {
     const trimmed: string = title.trim()
 
     if (trimmed === '') {
@@ -69,7 +70,7 @@ function App() {
     if (trimmed.length > MAX_TITLE_LENGTH) {
       return `할 일은 ${MAX_TITLE_LENGTH}자 이내로 입력해주세요.`
     }
-    if (tasks.some((task) => task.title === trimmed)) {
+    if (tasks.some((task) => task.title === trimmed && task.id !== ignoreId)) {
       return '이미 같은 할 일이 있습니다.'
     }
     return null
@@ -97,6 +98,19 @@ function App() {
     }
   }
 
+  // 제목 수정 (Update): 실패하면 오류 메시지, 성공하면 null 반환
+  const editTask = (id: number, title: string): string | null => {
+    const errorMessage: string | null = validateTitle(title, id)
+    if (errorMessage !== null) {
+      return errorMessage
+    }
+
+    setTasks(
+      tasks.map((task) => (task.id === id ? { ...task, title: title.trim() } : task)),
+    )
+    return null
+  }
+
   // 완료 상태 변경 (Update)
   const toggleTask = (id: number): void => {
     setTasks(
@@ -120,6 +134,13 @@ function App() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(e.target.value)
     setError('')
+  }
+
+  // 입력창에서 Enter를 눌렀을 때 (한글 조합 중에는 무시)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      addTask(input)
+    }
   }
 
   // 추가 버튼을 눌렀을 때
@@ -169,7 +190,8 @@ function App() {
           type="text"
           value={input}
           onChange={handleChange}
-          placeholder="할 일을 입력하세요"
+          onKeyDown={handleKeyDown}
+          placeholder="할 일을 입력하고 Enter"
           aria-label="새 할 일"
         />
         <button type="button" onClick={handleAddClick}>
@@ -194,6 +216,7 @@ function App() {
             task={task}
             onToggle={toggleTask}
             onDelete={deleteTask}
+            onEdit={editTask}
           />
         ))}
       </ul>
